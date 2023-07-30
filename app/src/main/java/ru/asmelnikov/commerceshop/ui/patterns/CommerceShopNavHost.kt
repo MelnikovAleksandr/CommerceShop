@@ -11,6 +11,8 @@ import ru.asmelnikov.commerceshop.common.navigation.CommerceShopScreenRoute
 import ru.asmelnikov.commerceshop.common.navigation.NavigationBarSection
 import ru.asmelnikov.commerceshop.common.navigation.navigateSaved
 import ru.asmelnikov.commerceshop.common.navigation.popUp
+import ru.asmelnikov.commerceshop.domain.models.Category
+import ru.asmelnikov.commerceshop.domain.models.Product
 import ru.asmelnikov.commerceshop.main.CommerceShopState
 import ru.asmelnikov.commerceshop.ui.features.cart.CartScreen
 import ru.asmelnikov.commerceshop.ui.features.detail.ProductDetailScreen
@@ -35,7 +37,12 @@ fun NavGraphBuilder.appSoGraph(appState: CommerceShopState) {
     val detailRoute = CommerceShopScreenRoute.ProductDetail.route
 
 
-    val goToListFromHome: () -> Unit = {
+    val productSelectedInHome: (Product) -> Unit = { product: Product ->
+        appState.productSelected = product
+        appState.navigateSaved(detailRoute, homeRoute)
+    }
+    val categorySelectedInHome: (Category) -> Unit = { category: Category ->
+        appState.categorySelected = category
         appState.navigateSaved(listRoute, homeRoute)
     }
 
@@ -48,7 +55,10 @@ fun NavGraphBuilder.appSoGraph(appState: CommerceShopState) {
     }
 
     composable(NavigationBarSection.Home.route) {
-        HomeScreen(goToProductList = goToListFromHome)
+        HomeScreen(
+            categorySelected = categorySelectedInHome,
+            productSelected = productSelectedInHome
+        )
     }
 
     composable(NavigationBarSection.Cart.route) {

@@ -10,8 +10,14 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.CoroutineScope
+import ru.asmelnikov.commerceshop.common.navigation.CommerceShopScreenRoute
+import ru.asmelnikov.commerceshop.domain.models.Category
+import ru.asmelnikov.commerceshop.domain.models.Product
+import ru.asmelnikov.commerceshop.domain.models.order.Order
+import ru.asmelnikov.commerceshop.domain.models.order.SummaryTotals
 
 @Composable
 fun rememberAppState(
@@ -35,7 +41,18 @@ class CommerceShopState(
     val navController: NavHostController,
     private val resources: Resources,
     coroutineScope: CoroutineScope
-)
+){
+    private val screensWithArrowBack = CommerceShopScreenRoute.withArrowBack.map { it.route }
+
+    val shouldShowArrowBack: Boolean
+        @Composable get() = navController
+            .currentBackStackEntryAsState().value?.destination?.route in screensWithArrowBack
+
+    lateinit var categorySelected: Category
+    lateinit var productSelected: Product
+    lateinit var summaryTotals: SummaryTotals
+    lateinit var orderSelected: Order
+}
 
 @Composable
 @ReadOnlyComposable

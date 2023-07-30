@@ -1,45 +1,86 @@
 package ru.asmelnikov.commerceshop.ui.features.home
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import ru.asmelnikov.commerceshop.ui.theme.Orange
+import ru.asmelnikov.commerceshop.domain.models.Category
+import ru.asmelnikov.commerceshop.domain.models.Product
+import ru.asmelnikov.commerceshop.ui.composables.searchbar.SearchBar
+import ru.asmelnikov.commerceshop.ui.features.home.components.CategorySection
+import ru.asmelnikov.commerceshop.ui.features.home.components.HomeSection
+import ru.asmelnikov.commerceshop.ui.features.home.components.ProductSection
+import ru.asmelnikov.commerceshop.ui.theme.LightGrayBackground
 import ru.asmelnikov.commerceshop.R.string as AppText
+
 
 @Composable
 fun HomeScreen(
+    categorySelected: (category: Category) -> Unit,
+    productSelected: (product: Product) -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: HomeViewModel = hiltViewModel(),
-    goToProductList: () -> Unit,
+    viewModel: HomeViewModel = hiltViewModel()
+) {
+
+    val products by viewModel.productListState.collectAsState()
+    val categories by viewModel.categoryListState.collectAsState()
+
+    HomeElements(
+        categories,
+        products,
+        categorySelected,
+        productSelected,
+        modifier = modifier.background(LightGrayBackground)
+    )
+}
+
+@Composable
+private fun HomeElements(
+    categories: List<Category>,
+    products: List<Product>,
+    categorySelected: (category: Category) -> Unit,
+    productSelected: (product: Product) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        modifier
+            .verticalScroll(rememberScrollState())
+            .padding(vertical = 16.dp)
     ) {
-        Text(
-            text = stringResource(id = AppText.home),
-            style = MaterialTheme.typography.body1
-        )
-        Spacer(modifier = Modifier.padding(50.dp))
-        Button(
-            onClick = goToProductList,
-            modifier = Modifier.align(Alignment.CenterHorizontally),
-            colors = ButtonDefaults.buttonColors(
-                backgroundColor = Orange,
-                contentColor = Color.White
-            )
+        SearchBar(Modifier.padding(horizontal = 16.dp))
+        HomeSection(
+            title = stringResource(AppText.categories),
+            withArrow = false
         ) {
-            Text(text = stringResource(id = AppText.to_product_list_screen))
+            CategorySection(
+                categories = categories,
+                categorySelected = categorySelected
+            )
+        }
+        HomeSection(
+            title = stringResource(AppText.recommended),
+            withArrow = true
+        ) {
+            ProductSection(
+                products = products,
+                productSelected = productSelected
+            )
+        }
+        HomeSection(
+            title = stringResource(AppText.new_arrivals),
+            withArrow = true
+        ) {
+            ProductSection(
+                products = products,
+                productSelected = productSelected
+            )
         }
     }
 }
