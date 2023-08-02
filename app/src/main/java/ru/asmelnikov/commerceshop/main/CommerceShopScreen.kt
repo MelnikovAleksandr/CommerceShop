@@ -21,7 +21,7 @@ fun CommerceShopScreen() {
             val appState = rememberAppState()
             Scaffold(
                 scaffoldState = appState.scaffoldState,
-                topBar = { CommerceShopTopBar() },
+                topBar = { CommerceShopTopBar(appState) },
                 bottomBar = {
                     CommerceShopBottomBar(
                         navController = appState.navController

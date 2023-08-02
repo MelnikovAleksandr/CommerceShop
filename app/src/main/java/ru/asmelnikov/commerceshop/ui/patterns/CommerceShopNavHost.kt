@@ -10,7 +10,6 @@ import androidx.navigation.compose.composable
 import ru.asmelnikov.commerceshop.common.navigation.CommerceShopScreenRoute
 import ru.asmelnikov.commerceshop.common.navigation.NavigationBarSection
 import ru.asmelnikov.commerceshop.common.navigation.navigateSaved
-import ru.asmelnikov.commerceshop.common.navigation.popUp
 import ru.asmelnikov.commerceshop.domain.models.Category
 import ru.asmelnikov.commerceshop.domain.models.Product
 import ru.asmelnikov.commerceshop.main.CommerceShopState
@@ -35,6 +34,7 @@ fun NavGraphBuilder.appSoGraph(appState: CommerceShopState) {
     val homeRoute = CommerceShopScreenRoute.Home.route
     val listRoute = CommerceShopScreenRoute.ProductList.route
     val detailRoute = CommerceShopScreenRoute.ProductDetail.route
+    val cartRoute = CommerceShopScreenRoute.Cart.route
 
 
     val productSelectedInHome: (Product) -> Unit = { product: Product ->
@@ -51,8 +51,8 @@ fun NavGraphBuilder.appSoGraph(appState: CommerceShopState) {
         appState.navigateSaved(detailRoute, listRoute)
     }
 
-    val goBack: () -> Unit = {
-        appState.popUp()
+    val goToCartScreen: () -> Unit = {
+        appState.navigateSaved(cartRoute, detailRoute)
     }
 
     composable(NavigationBarSection.Home.route) {
@@ -74,7 +74,10 @@ fun NavGraphBuilder.appSoGraph(appState: CommerceShopState) {
     }
 
     composable(CommerceShopScreenRoute.ProductDetail.route) {
-        ProductDetailScreen(goToBack = goBack)
+        ProductDetailScreen(
+            product = appState.productSelected,
+            goToCart = goToCartScreen
+        )
     }
 
 }
