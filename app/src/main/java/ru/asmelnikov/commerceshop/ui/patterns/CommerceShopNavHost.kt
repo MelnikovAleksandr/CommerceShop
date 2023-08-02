@@ -20,6 +20,7 @@ import ru.asmelnikov.commerceshop.ui.features.checkout.CheckoutScreen
 import ru.asmelnikov.commerceshop.ui.features.detail.ProductDetailScreen
 import ru.asmelnikov.commerceshop.ui.features.home.HomeScreen
 import ru.asmelnikov.commerceshop.ui.features.list.ProductListScreen
+import ru.asmelnikov.commerceshop.ui.features.payment.PlaceOrderScreen
 
 @Composable
 fun CommerceShopNavHost(appState: CommerceShopState, paddingValues: PaddingValues) {
@@ -102,5 +103,9 @@ fun NavGraphBuilder.appSoGraph(appState: CommerceShopState) {
             summary = appState.summaryTotals,
             goToPlaceOrder = goToPlaceOrderScreen
         )
+    }
+
+    composable(CommerceShopScreenRoute.PlaceOrder.route) {
+        PlaceOrderScreen(order = appState.orderSelected)
     }
 }
