@@ -46,7 +46,8 @@ fun NavGraphBuilder.appSoGraph(appState: CommerceShopState) {
         appState.navigateSaved(listRoute, homeRoute)
     }
 
-    val goToDetailFromList: () -> Unit = {
+    val productSelectedInList: (Product) -> Unit = { product: Product ->
+        appState.productSelected = product
         appState.navigateSaved(detailRoute, listRoute)
     }
 
@@ -66,7 +67,10 @@ fun NavGraphBuilder.appSoGraph(appState: CommerceShopState) {
     }
 
     composable(CommerceShopScreenRoute.ProductList.route) {
-        ProductListScreen(goToProductDetail = goToDetailFromList)
+        ProductListScreen(
+            category = appState.categorySelected,
+            productSelected = productSelectedInList
+        )
     }
 
     composable(CommerceShopScreenRoute.ProductDetail.route) {
